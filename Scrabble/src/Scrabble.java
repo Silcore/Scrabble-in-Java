@@ -32,8 +32,8 @@ public class Scrabble {
 		// Temporary Center Panel
 		frame.add(new JPanel(), BorderLayout.CENTER);
 		
-		frame.setMinimumSize(new Dimension(800, 600));
-		frame.setSize(new Dimension(800, 600));
+		frame.setMinimumSize(new Dimension(800, 500));
+		frame.setSize(new Dimension(800, 500));
 		frame.setVisible(true);
 	}
 }
