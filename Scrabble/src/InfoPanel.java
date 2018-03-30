@@ -6,13 +6,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
 
 public class InfoPanel extends JPanel {
 	public InfoPanel() {
+		// Initializing infoBox and scrabbleBox Labels
 		JLabel infoBox = new JLabel("<html>Letter Distribution<br/><pre>A-9  J-1  S-4"
 				+ "<br/>B-2  K-1  T-6<br/>C-2  L-4  U-4<br/>D-4  M-2  V-2"
 				+ "<br/>E-12 N-6  W-2<br/>F-2  O-8  X-1<br/>G-3  P-2  Y-2"
@@ -23,11 +26,12 @@ public class InfoPanel extends JPanel {
 				+ "<br/></html>", SwingConstants.CENTER);
 		infoBox.setFont(new Font("Serif", Font.PLAIN, 12));
 		scrabbleBox.setFont(new Font("Serif", Font.PLAIN, 12));
+		
+		// Formatting Panel
 		super.setLayout(new BorderLayout());
-		super.setBorder(new EmptyBorder(10, 10, 10, 10));
+		super.setBorder(BorderFactory.createCompoundBorder(new MatteBorder(0, 0, 0, 2, Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
 		super.add(infoBox, BorderLayout.PAGE_END);
 		super.add(scrabbleBox, BorderLayout.PAGE_START);
-		
 	}
 	
 	@Override
