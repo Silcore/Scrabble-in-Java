@@ -36,18 +36,12 @@ class InfoPanel extends JPanel {
 				+ "<br/>B-2  K-1  T-6<br/>C-2  L-4  U-4<br/>D-4  M-2  V-2"
 				+ "<br/>E-12 N-6  W-2<br/>F-2  O-8  X-1<br/>G-3  P-2  Y-2"
 				+ "<br/>H-2  Q-1  Z-1<br/>I-9  R-6<br/>BLANK-2</pre></html>", SwingConstants.CENTER);
-		JLabel scrabbleBox = new JLabel("<html>S<sub>1</sub><br/>C<sub>3</sub>"
-				+ "<br/>R<sub>1</sub><br/>A<sub>1</sub><br/>B<sub>3</sub>"
-				+ "<br/>B<sub>3</sub><br/>L<sub>1</sub><br/>E<sub>1</sub>"
-				+ "<br/></html>", SwingConstants.CENTER);
 		infoBox.setFont(new Font("Serif", Font.PLAIN, 12));
-		scrabbleBox.setFont(new Font("Serif", Font.PLAIN, 12));
 		
 		// Formatting Panel
 		super.setLayout(new BorderLayout());
 		super.setBorder(BorderFactory.createCompoundBorder(new MatteBorder(0, 0, 0, 2, Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
-		super.add(infoBox, BorderLayout.PAGE_END);
-		super.add(scrabbleBox, BorderLayout.PAGE_START);
+		super.add(infoBox, BorderLayout.SOUTH);
 	}
 	
 	@Override
