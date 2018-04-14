@@ -6,7 +6,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 
-public class ScrabbleFrame extends JFrame {
+//	Frame containing all Scrabble frames. Transitions between frames as necessary.
+public class ScrabbleFrame extends JFrame {	
 	public ScrabbleFrame() {
 		super("Scrabble in Java");
 		super.setLayout(new BorderLayout());
