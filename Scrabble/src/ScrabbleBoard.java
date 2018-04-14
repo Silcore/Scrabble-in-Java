@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -15,19 +16,23 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 
 public class ScrabbleBoard extends JPanel {
+	private final Scrabble scrabble;
+	
 	public ScrabbleBoard() {
 		super();
-
+		
+		scrabble = new Scrabble();
 		InfoPanel iPanel = new InfoPanel();
 		ButtonPanel bPanel = new ButtonPanel();
+		GamePanel gPanel = new GamePanel();
 		
 		super.setLayout(new BorderLayout());
 		super.add(bPanel, BorderLayout.NORTH);
 		super.add(iPanel, BorderLayout.WEST);
+		super.add(gPanel, BorderLayout.CENTER);
 	}
-}
-
-class InfoPanel extends JPanel {
+	
+	class InfoPanel extends JPanel {
 	public InfoPanel() {
 		super();
 		
@@ -73,4 +78,58 @@ class ButtonPanel extends JPanel {
 		super.paintComponent(g);
 		this.setBackground(Color.WHITE);
 	}
+}
+
+class GamePanel extends JPanel {
+	public GamePanel() {
+		super();
+		
+		// Formatting Panel
+		super.setLayout(new GridLayout(15, 15, -1, -1));
+		for(int i = 0; i < (15*15); i++) {
+			JLabel label = new JLabel();
+			
+			if(scrabble.getIndex(i) == 1) {
+				label.setText("<html><div style='text-align: center;'>Double Word Score</div></html>");
+				label.setBackground(Color.PINK);
+				label.setOpaque(true);
+				this.add(label);
+			}
+			else if(scrabble.getIndex(i) == 2) {
+				label.setText("<html><div style='text-align: center;'>Double Letter Score</div></html>");
+				label.setBackground(Color.CYAN);
+				label.setOpaque(true);
+				this.add(label);
+			}
+			else if(scrabble.getIndex(i) == 3) {
+				label.setText("<html><div style='text-align: center;'>Triple Letter Score</div></html>");
+				label.setBackground(Color.ORANGE);
+				label.setOpaque(true);
+				this.add(label);
+			}
+			else if(scrabble.getIndex(i) == 4) {
+				label.setText("<html><div style='text-align: center;'>Double Word Score</div></html>");
+				label.setBackground(Color.BLUE);
+				label.setOpaque(true);
+				this.add(label);
+			}
+			else if(scrabble.getIndex(i) == 6) {
+				label.setText("<html><div style='text-align: center;'>Triple Word Score</div></html>");
+				label.setBackground(Color.RED);
+				label.setOpaque(true);
+				this.add(label);
+			}
+			else {
+				label.setText(" ");
+				this.add(label);
+			}
+		}
+	}
+	
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		this.setBackground(new Color(255, 228, 174));
+	}
+}
 }
