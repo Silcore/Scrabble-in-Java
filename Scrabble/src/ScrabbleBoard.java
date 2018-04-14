@@ -89,47 +89,47 @@ class GamePanel extends JPanel {
 		for(int i = 0; i < (15*15); i++) {
 			JLabel label = new JLabel();
 			
-			if(scrabble.getIndex(i) == 1) {
-				label.setText("<html><div style='text-align: center;'>Double Word Score</div></html>");
-				label.setBackground(Color.PINK);
-				label.setOpaque(true);
-				this.add(label);
+			switch (scrabble.getIndex(i)) {
+				case 1:
+					label.setText("Double Word Score");
+					label.setBackground(new Color(229, 126, 221));
+					break;
+				case 2:
+					label.setText("Double Letter Score");
+					label.setBackground(new Color(0, 255, 255));
+					break;
+				case 3:
+					label.setText("Triple Letter Score");
+					label.setBackground(new Color(120, 191, 0));
+					break;
+				case 4:
+					label.setText("Double Word Score");
+					label.setBackground(new Color(0, 191, 191));
+					break;
+				case 6:
+					label.setText("Triple Word Score");
+					label.setBackground(new Color(80, 127, 0));
+					break;
+				default:
+					label.setText(" ");
+					label.setBackground(new Color(255, 228, 174));
+					break;
 			}
-			else if(scrabble.getIndex(i) == 2) {
-				label.setText("<html><div style='text-align: center;'>Double Letter Score</div></html>");
-				label.setBackground(Color.CYAN);
-				label.setOpaque(true);
-				this.add(label);
-			}
-			else if(scrabble.getIndex(i) == 3) {
-				label.setText("<html><div style='text-align: center;'>Triple Letter Score</div></html>");
-				label.setBackground(Color.ORANGE);
-				label.setOpaque(true);
-				this.add(label);
-			}
-			else if(scrabble.getIndex(i) == 4) {
-				label.setText("<html><div style='text-align: center;'>Double Word Score</div></html>");
-				label.setBackground(Color.BLUE);
-				label.setOpaque(true);
-				this.add(label);
-			}
-			else if(scrabble.getIndex(i) == 6) {
-				label.setText("<html><div style='text-align: center;'>Triple Word Score</div></html>");
-				label.setBackground(Color.RED);
-				label.setOpaque(true);
-				this.add(label);
-			}
-			else {
-				label.setText(" ");
-				this.add(label);
-			}
+			
+			label.setOpaque(true);
+			label.setBorder(new MatteBorder(2, 2, 2, 2, Color.BLACK));
+			label.setHorizontalAlignment(SwingConstants.CENTER);
+			label.setVerticalAlignment(SwingConstants.CENTER);
+			label.setText("<html><div style='text-align: center;'>" + label.getText() + "</div></html>");
+			label.setFont(new Font("Serif", Font.BOLD, 10));
+			this.add(label);
 		}
 	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		this.setBackground(new Color(255, 228, 174));
+		this.setBackground(Color.BLACK);
 	}
 }
 }

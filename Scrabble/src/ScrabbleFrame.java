@@ -15,8 +15,8 @@ public class ScrabbleFrame extends JFrame {
 		// Adding Game Board
 		super.add(new ScrabbleBoard());
 		
-		super.setMinimumSize(new Dimension(800, 500));
-		super.setSize(new Dimension(800, 500));
+		super.setMinimumSize(new Dimension(1000, 700));
+		super.setSize(new Dimension(1000, 700));
 		super.setVisible(true);
 	}
 }
