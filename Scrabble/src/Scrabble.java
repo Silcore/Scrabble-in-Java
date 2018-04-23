@@ -47,8 +47,16 @@ public class Scrabble {
 		return boardState[index];
 	}
 	
+	public int getPlayerCount() {
+		return playerList.size();
+	}
+	
 	public void addPlayer(String name) {
 		playerList.add(new Player(name));
+	}
+	
+	public void resetPlayers() {
+		playerList.clear();
 	}
 	
 	//	Private nested class Player which is responsible for per-player information.
