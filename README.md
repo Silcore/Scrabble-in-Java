@@ -3,7 +3,8 @@ FSU COP3252 Java semester project focused on recreating Scrabble in Java using t
 
 #### To Do
 - [X] Add third card to starting page CardLayout (for choosing player names).
-- [ ] Fill in SOUTH pane of ScrabbleBoard.
+- [X] Fill in SOUTH pane of ScrabbleBoard.
 - [ ] Add drag and drop and/or click functionality to ScrabbleBoard.
-- [ ] Display current player scores in WEST ScrabbleBoard panel.
+- [X] Display current player scores in WEST ScrabbleBoard panel.
+- [ ] Update player scores when turn is made.
 - [ ] Finish Scrabble class and game logic.

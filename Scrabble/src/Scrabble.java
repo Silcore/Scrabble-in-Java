@@ -2,14 +2,17 @@
 // COP3252 - Java
 // Semester Project (Scrabble.java)
 
-import java.util.ArrayList;
+import java.util.*;
 
 //	Scrabble class (implemented as a Singleton) which contains all information pertaining to the game.
 //	Player information is stored in a private player class within Scrabble, handled by Scrabble methods.
 public class Scrabble {
 	private static Scrabble instance = null;
 	private final char[] boardState;
+	private ArrayList<Character> letters;
 	private final ArrayList<Player> playerList;
+	private final ArrayList<Integer> turnList;
+	private int turnIndex;
 	
 	public static void main(String[] args) {
 		ScrabbleFrame frame = new ScrabbleFrame();
@@ -34,7 +37,23 @@ public class Scrabble {
 								 0,0,4,0,0,0,2,0,2,0,0,0,4,0,0,
 								 0,4,0,0,0,3,0,0,0,3,0,0,0,4,0,
 								 6,0,0,2,0,0,0,6,0,0,0,2,0,0,6};
+
+		// finite array of letters, can be changed in the future
+		// letters are removed and placed into players hands
+		char[] lettersArray = new char[] {'A','A','A','A','A','A','A','A','A','B','B','C','C','D','D',
+				  			  'D','D','E','E','E','E','E','E','E','E','E','E','E','E','F',
+							  'F','G','G','G','H','H','I','I','I','I','I','I','I','I','I',
+							  'J','K','L','L','L','L','M','M','N','N','N','N','N','N','O',
+							  'O','O','O','O','O','O','O','P','P','Q','R','R','R','R','R',
+							  'R','S','S','S','S','T','T','T','T','T','T','U','U','U','U',
+							  'V','V','W','W','X','Y','Y', 'Z','*','*'};
+		letters = new ArrayList<>();
+		for(char i : lettersArray) letters.add(i);
 		playerList = new ArrayList<>();
+		// turn order list
+		turnList = new ArrayList<>();
+		// index of current player turn
+		turnIndex = 0;
 	}
 	
 	public static Scrabble getInstance() {
@@ -51,24 +70,79 @@ public class Scrabble {
 		return playerList.size();
 	}
 	
-	public void addPlayer(String name) {
-		playerList.add(new Player(name));
-	}
+	public void addPlayer(String name) { playerList.add(new Player(name)); }
 	
-	public void resetPlayers() {
-		playerList.clear();
+	public void resetPlayers() { playerList.clear();}
+
+	// called when game starts
+	public void setUpPlayers(){
+		// used to figure out turn order
+		// get hand, get first drawn char and get player num
+		// treemap is automatically sorted by the letter which determines the turn order
+		TreeMap<Character,Integer> turnsInfo = new TreeMap<>();
+		int e = 0;
+		for(Player i : playerList) {
+			i.fillHand();
+			turnsInfo.put(i.getFirstLetter(),e);
+			e++;
+		}
+		// populate the turn list
+		for(Map.Entry<Character,Integer> i : turnsInfo.entrySet()) { turnList.add(i.getValue()); }
 	}
+
+	//array with all current players tiles, up to 7 tiles
+	public ArrayList<Character> getCurrentPlayerHand(){ return playerList.get(turnList.get(turnIndex)).getHand();}
+
+	public String getCurrentPlayerName(){ return playerList.get(turnList.get(turnIndex)).getPlayerName();}
+
+	// get a player name based on index, used to show all scores
+	public String getPlayerName(int index){ return playerList.get(index).getPlayerName();}
+
+	// get a player score based on index, used to show all scores
+	public int getPlayerScore(int index){ return playerList.get(index).getPlayerScore();}
+
+	// go to next player, called whenever a turn is made
+	public void nextPlayer() {turnIndex=++turnIndex%4;}
+
+	// refill the tile of a player after a turn is made, called before changing players
+	public void refillCurrentPlayer() {playerList.get(turnList.get(turnIndex)).fillHand();}
 	
 	//	Private nested class Player which is responsible for per-player information.
 	//	Contains information regarding player hand, score, name, and other details.
 	private class Player {
 		private final String playerName;
+		private int playerScore;
+		private ArrayList<Character> playerLetters;
 		
 		public Player(String name) {
 			if(name.length() > 15)
 				name = name.substring(0, 15) + "...";
 			
 			playerName = name;
+			playerScore = 0;
+			playerLetters = new ArrayList<>();
 		}
+
+		// assigns new tiles to player no matter if empty or partly filled
+		// stops when 7 tiles is reached or no more tiles available
+		public void fillHand() {
+			Random r = new Random();
+			for(int i = 0; i < 7; i++){
+				if(letters.size() != 0 && playerLetters.size() < 7){
+					int e = r.nextInt(letters.size());
+					playerLetters.add(letters.get(e));
+					letters.remove(e);
+				}
+			}
+		}
+
+		// only really used for turn order
+		public char getFirstLetter() {return playerLetters.get(0);}
+
+		public ArrayList<Character> getHand() {return playerLetters;}
+
+		public String getPlayerName() {return playerName;}
+
+		public int getPlayerScore() {return playerScore;}
 	}
 }

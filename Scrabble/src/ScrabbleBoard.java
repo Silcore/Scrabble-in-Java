@@ -2,12 +2,10 @@
 // COP3252 - Java
 // Semester Project (Scrabble.java)
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GridLayout;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,20 +19,29 @@ import javax.swing.border.MatteBorder;
 //	Inner classes will reference the Scrabble object periodically as players make modifications to the GUI.
 public class ScrabbleBoard extends JPanel {	
 	private final Scrabble scrabble = Scrabble.getInstance();
-	
+
+	// made these member data because they need to be directly accessible
+	private HandPanel hPanel;
+	private ButtonPanel bPanel;
+	private InfoPanel iPanel;
+
 	public ScrabbleBoard() {
 		super();
 		
-		InfoPanel iPanel = new InfoPanel();
-		ButtonPanel bPanel = new ButtonPanel();
+		iPanel = new InfoPanel();
+		bPanel = new ButtonPanel();
 		GamePanel gPanel = new GamePanel();
-		HandPanel hPanel = new HandPanel();
+		hPanel = new HandPanel();
 		
 		super.setLayout(new BorderLayout());
 		super.add(bPanel, BorderLayout.NORTH);
 		super.add(iPanel, BorderLayout.WEST);
 		super.add(gPanel, BorderLayout.CENTER);
 		super.add(hPanel, BorderLayout.SOUTH);
+		// initialize players(name, tiles, score, turn order)
+		scrabble.setUpPlayers();
+		hPanel.setHand();
+		bPanel.showCurrentPlayer();
 	}
 	
 	@Override
@@ -60,12 +67,27 @@ public class ScrabbleBoard extends JPanel {
 			super.setLayout(new BorderLayout());
 			super.setBorder(BorderFactory.createCompoundBorder(new MatteBorder(0, 0, 0, 2, Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
 			super.add(infoBox, BorderLayout.SOUTH);
+
+			updateScores();
 		}
 
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			this.setBackground(Color.WHITE);
+		}
+
+		// called whenever a turn is made, updates current player scores
+		public void updateScores() {
+			String info = "<html>Scores<br/><pre>";
+			for(int i = 0; i < scrabble.getPlayerCount(); i++) {
+				info += scrabble.getPlayerName(i) + ": " + scrabble.getPlayerScore(i)+"<br/>";
+			}
+			info += "</pre></html>";
+			JLabel scores = new JLabel(info, SwingConstants.CENTER);
+			scores.setFont(new Font("Serif", Font.PLAIN, 14));
+			super.add(scores, BorderLayout.NORTH);
+			repaint();
 		}
 	}
 
@@ -100,12 +122,22 @@ public class ScrabbleBoard extends JPanel {
 			super.setLayout(new BorderLayout());
 			super.setBorder(BorderFactory.createCompoundBorder(new MatteBorder(0, 0, 2, 0, Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
 			super.add(buttonSection, BorderLayout.LINE_END);
+
 		}
 
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			this.setBackground(Color.WHITE);
+		}
+
+		// called whenever a turn is made, updates current player at top
+		// needs to be called after players have been initialized, not in this panel's constructor
+		public void showCurrentPlayer() {
+			JLabel playerName = new JLabel(scrabble.getCurrentPlayerName() + "'s Turn" , SwingConstants.CENTER);
+			playerName.setFont(new Font("Serif", Font.BOLD, 30));
+			super.add(playerName, BorderLayout.LINE_START);
+			repaint();
 		}
 	}
 
@@ -164,10 +196,24 @@ public class ScrabbleBoard extends JPanel {
 		}
 	}
 	
-	private class HandPanel extends JPanel {
-		public HandPanel() {
-			// Formatting Panel
-			super.setLayout(new BorderLayout());
+	private class HandPanel extends JPanel{
+
+		// create jpanels for all current players tiles, is called whenever turn is ended
+		// needs to be function which is explicitly called
+		// cannot be done in constructor because players will not have been initialized yet
+		public void setHand(){
+			ArrayList<Character> hand = scrabble.getCurrentPlayerHand();
+			super.setLayout(new FlowLayout(FlowLayout.CENTER,50,0));
+			for(Character i : hand) {
+				JLabel tile = new JLabel(i.toString());
+				tile.setOpaque(true);
+				tile.setBorder(new MatteBorder(1, 1, 1, 1, Color.BLACK));
+				tile.setFont(new Font("Serif", Font.BOLD, 34));
+				tile.setBackground(new Color(255, 228, 174));
+				tile.setPreferredSize(new Dimension(50,50));
+				tile.setHorizontalAlignment(SwingConstants.CENTER);
+				super.add(tile);
+			}
 			super.setBorder(BorderFactory.createCompoundBorder(new MatteBorder(2, 0, 0, 0, Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
 		}
 		
