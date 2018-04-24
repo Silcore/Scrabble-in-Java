@@ -2,13 +2,28 @@
 // COP3252 - Java
 // Semester Project (Scrabble.java)
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 
@@ -106,17 +121,24 @@ public class ScrabbleBoard extends JPanel {
 			endTurn.setContentAreaFilled(false);
 			endTurn.setOpaque(true);
 			endTurn.setBackground(Color.CYAN);
+			endTurn.addActionListener(new ActionListener() {
+										@Override
+										public void actionPerformed(ActionEvent e) {
+											System.out.println(scrabble.getCurrentWord());
+										}
+									});
 			
-			// Initializing resetTurn Button
-			JButton resetTurn = new JButton("Reset Turn");
-			resetTurn.setFocusPainted(false);
-			resetTurn.setContentAreaFilled(false);
-			resetTurn.setOpaque(true);
-			resetTurn.setBackground(Color.CYAN);
+			// Initializing endGame Button
+			JButton endGame = new JButton("End Game");
+			endGame.setFocusPainted(false);
+			endGame.setContentAreaFilled(false);
+			endGame.setOpaque(true);
+			endGame.setBackground(Color.RED);
 			
 			// Adding Buttons to Button Section
-			buttonSection.add(resetTurn);
 			buttonSection.add(endTurn);
+			buttonSection.add(Box.createHorizontalStrut(20));
+			buttonSection.add(endGame);
 
 			// Formatting Panel
 			super.setLayout(new BorderLayout());
@@ -146,47 +168,7 @@ public class ScrabbleBoard extends JPanel {
 	private class GamePanel extends JPanel {
 		public GamePanel() {
 			super();
-
-			// Formatting Panel and Generating Grid
-			super.setLayout(new GridLayout(15, 15));
-			for(int i = 0; i < (15*15); i++) {
-				JLabel label = new JLabel();
-
-				switch (scrabble.getIndex(i)) {
-					case 1:
-						label.setText("Double Word Score");
-						label.setBackground(new Color(229, 126, 221));
-						break;
-					case 2:
-						label.setText("Double Letter Score");
-						label.setBackground(new Color(0, 255, 255));
-						break;
-					case 3:
-						label.setText("Triple Letter Score");
-						label.setBackground(new Color(120, 191, 0));
-						break;
-					case 4:
-						label.setText("Double Word Score");
-						label.setBackground(new Color(0, 191, 191));
-						break;
-					case 6:
-						label.setText("Triple Word Score");
-						label.setBackground(new Color(80, 127, 0));
-						break;
-					default:
-						label.setText(" ");
-						label.setBackground(new Color(255, 228, 174));
-						break;
-				}
-
-				label.setOpaque(true);
-				label.setBorder(new MatteBorder(1, 1, 0, 0, Color.BLACK));
-				label.setHorizontalAlignment(SwingConstants.CENTER);
-				label.setVerticalAlignment(SwingConstants.CENTER);
-				label.setText("<html><div style='text-align: center;'>" + label.getText() + "</div></html>");
-				label.setFont(new Font("Serif", Font.BOLD, 10));
-				this.add(label);
-			}
+			buildPanel();
 		}
 
 		@Override
@@ -194,10 +176,111 @@ public class ScrabbleBoard extends JPanel {
 			super.paintComponent(g);
 			this.setBackground(Color.WHITE);
 		}
+		
+		public void reset() {
+			buildPanel();
+		}
+		
+		private void buildPanel() {
+			// Formatting Panel and Generating Grid
+			super.setLayout(new GridLayout(15, 15));
+			for(int i = 0; i < 15; i++) {
+				for(int j = 0; j < 15; j++) {
+					JLabel label = new JLabel();
+					label.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							if(hPanel.getCurrentPiece() != null) {
+								// Functionality for Blank Pieces
+								if(hPanel.getCurrentPiece().getText().charAt(0) == '*') {
+									JDialog dialog = new JDialog();
+									JPanel dialogPanel = new JPanel();
+									dialogPanel.setLayout(new BoxLayout(dialogPanel, BoxLayout.Y_AXIS));
+									
+									JLabel info = new JLabel("<html>Select the letter you would like to replace the "
+											+ "blank piece with, then press ENTER.</html>");
+									info.setFont(new Font("Helvetica", Font.PLAIN, 12));
+									info.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+									info.setSize(100, 50);
+									info.setBorder(new EmptyBorder(10, 40, 10, 40));
+									
+									JTextField letter = new JTextField("");
+									letter.setSize(new Dimension(100, 50));
+									letter.addActionListener(new ActionListener() {
+										@Override
+										public void actionPerformed(ActionEvent e) {
+											dialog.setVisible(false);
+											hPanel.getCurrentPiece().setText(letter.getText().substring(0,1).toUpperCase());
+											label.setText(hPanel.getCurrentPiece().getText());
+											hPanel.getCurrentPiece().setVisible(false);
+											hPanel.resetCurrentPiece();
+										}
+									});
+									
+									dialogPanel.add(info);
+									dialogPanel.add(letter);
+									dialog.add(dialogPanel);
+									dialog.setSize(300, 150);
+									dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+									dialog.setUndecorated(true);
+									dialog.setLocationRelativeTo(null);
+									dialog.setVisible(true);
+								}
+								// If it isn't a blank piece, and isn't null
+								else {
+									label.setText(hPanel.getCurrentPiece().getText());
+									hPanel.getCurrentPiece().setVisible(false);
+									hPanel.resetCurrentPiece();
+								}
+								
+								// Need to add to ArrayList of currentWord
+								scrabble.addWordLetter(label.getText().charAt(0));
+							}
+						}
+					});
+
+					switch (scrabble.getIndex(i, j)) {
+						case 1:
+							label.setText("Double Word Score");
+							label.setBackground(new Color(229, 126, 221));
+							break;
+						case 2:
+							label.setText("Double Letter Score");
+							label.setBackground(new Color(0, 255, 255));
+							break;
+						case 3:
+							label.setText("Triple Letter Score");
+							label.setBackground(new Color(120, 191, 0));
+							break;
+						case 4:
+							label.setText("Double Word Score");
+							label.setBackground(new Color(0, 191, 191));
+							break;
+						case 6:
+							label.setText("Triple Word Score");
+							label.setBackground(new Color(80, 127, 0));
+							break;
+						default:
+							label.setText(" ");
+							label.setBackground(new Color(255, 228, 174));
+							break;
+					}
+
+					label.setOpaque(true);
+					label.setBorder(new MatteBorder(1, 1, 0, 0, Color.BLACK));
+					label.setHorizontalAlignment(SwingConstants.CENTER);
+					label.setVerticalAlignment(SwingConstants.CENTER);
+					label.setText("<html><div style='text-align: center;'>" + label.getText() + "</div></html>");
+					label.setFont(new Font("Serif", Font.BOLD, 10));
+					this.add(label);
+				}
+			}
+		}
 	}
 	
 	private class HandPanel extends JPanel{
-
+		private JLabel currentPiece;
+		
 		// create jpanels for all current players tiles, is called whenever turn is ended
 		// needs to be function which is explicitly called
 		// cannot be done in constructor because players will not have been initialized yet
@@ -212,6 +295,17 @@ public class ScrabbleBoard extends JPanel {
 				tile.setBackground(new Color(255, 228, 174));
 				tile.setPreferredSize(new Dimension(50,50));
 				tile.setHorizontalAlignment(SwingConstants.CENTER);
+				tile.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						if(currentPiece != null)
+							currentPiece.setBackground(new Color(255, 228, 174));
+						
+						tile.setBackground(new Color(67, 191, 112));
+						currentPiece = tile;
+					}
+				});
+				
 				super.add(tile);
 			}
 			super.setBorder(BorderFactory.createCompoundBorder(new MatteBorder(2, 0, 0, 0, Color.BLACK), new EmptyBorder(10, 10, 10, 10)));
@@ -221,6 +315,14 @@ public class ScrabbleBoard extends JPanel {
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			this.setBackground(Color.WHITE);
+		}
+		
+		public JLabel getCurrentPiece() {
+			return currentPiece;
+		}
+		
+		public void resetCurrentPiece() {
+			currentPiece = null;
 		}
 	}
 }

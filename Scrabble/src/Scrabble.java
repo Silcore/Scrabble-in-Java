@@ -2,13 +2,17 @@
 // COP3252 - Java
 // Semester Project (Scrabble.java)
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
 
 //	Scrabble class (implemented as a Singleton) which contains all information pertaining to the game.
 //	Player information is stored in a private player class within Scrabble, handled by Scrabble methods.
 public class Scrabble {
 	private static Scrabble instance = null;
-	private final char[] boardState;
+	private final char[][] boardState;
+	private ArrayList<Character> playerWord;
 	private ArrayList<Character> letters;
 	private final ArrayList<Player> playerList;
 	private final ArrayList<Integer> turnList;
@@ -23,21 +27,21 @@ public class Scrabble {
 		//	boardState maintains the current state of the board
 		//	0 = blank, 1 = star, 2 = double letter, 3 = triple letter, 4 = double word, 6 = triple word
 		//	Respective letters are stored as their literal character equivalent.
-		boardState = new char[] {6,0,0,2,0,0,0,6,0,0,0,2,0,0,6,
-								 0,4,0,0,0,3,0,0,0,3,0,0,0,4,0,
-								 0,0,4,0,0,0,2,0,2,0,0,0,4,0,0,
-								 2,0,0,4,0,0,0,2,0,0,0,4,0,0,2,
-								 0,0,0,0,4,0,0,0,0,0,4,0,0,0,0,
-								 0,3,0,0,0,3,0,0,0,3,0,0,0,3,0,
-								 0,0,2,0,0,0,2,0,2,0,0,0,2,0,0,
-								 6,0,0,2,0,0,0,1,0,0,0,2,0,0,6,
-								 0,0,2,0,0,0,2,0,2,0,0,0,2,0,0,
-								 0,3,0,0,0,3,0,0,0,3,0,0,0,3,0,
-								 0,0,0,0,4,0,0,0,0,0,4,0,0,0,0,
-								 2,0,0,4,0,0,0,2,0,0,0,4,0,0,2,
-								 0,0,4,0,0,0,2,0,2,0,0,0,4,0,0,
-								 0,4,0,0,0,3,0,0,0,3,0,0,0,4,0,
-								 6,0,0,2,0,0,0,6,0,0,0,2,0,0,6};
+		boardState = new char[][] {{6,0,0,2,0,0,0,6,0,0,0,2,0,0,6},
+								   {0,4,0,0,0,3,0,0,0,3,0,0,0,4,0},
+								   {0,0,4,0,0,0,2,0,2,0,0,0,4,0,0},
+								   {2,0,0,4,0,0,0,2,0,0,0,4,0,0,2},
+								   {0,0,0,0,4,0,0,0,0,0,4,0,0,0,0},
+								   {0,3,0,0,0,3,0,0,0,3,0,0,0,3,0},
+								   {0,0,2,0,0,0,2,0,2,0,0,0,2,0,0},
+								   {6,0,0,2,0,0,0,1,0,0,0,2,0,0,6},
+								   {0,0,2,0,0,0,2,0,2,0,0,0,2,0,0},
+								   {0,3,0,0,0,3,0,0,0,3,0,0,0,3,0},
+								   {0,0,0,0,4,0,0,0,0,0,4,0,0,0,0},
+								   {2,0,0,4,0,0,0,2,0,0,0,4,0,0,2},
+								   {0,0,4,0,0,0,2,0,2,0,0,0,4,0,0},
+								   {0,4,0,0,0,3,0,0,0,3,0,0,0,4,0},
+								   {6,0,0,2,0,0,0,6,0,0,0,2,0,0,6}};
 
 		// finite array of letters, can be changed in the future
 		// letters are removed and placed into players hands
@@ -60,18 +64,26 @@ public class Scrabble {
 	}
 	
 	// GETTERS
+	// gets the singleton instance of Scrabble
 	public static Scrabble getInstance() {
 		if(instance == null)
 			instance = new Scrabble();
 		return instance;
 	}
 	
-	public char getIndex(int index) {
-		return boardState[index];
+	// gets the character in the corresponding i, j index positions
+	public char getIndex(int i, int j) {
+		return boardState[i][j];
 	}
 	
+	// gets the total number of players
 	public int getPlayerCount() {
 		return playerList.size();
+	}
+	
+	// get the current playerWord
+	public ArrayList<Character> getCurrentWord() {
+		return playerWord;
 	}
 	
 	//array with all current players tiles, up to 7 tiles
@@ -79,6 +91,7 @@ public class Scrabble {
 		return playerList.get(turnList.get(turnIndex)).getHand();
 	}
 
+	// gets the name of the current player
 	public String getCurrentPlayerName() {
 		return playerList.get(turnList.get(turnIndex)).getPlayerName();
 	}
@@ -94,8 +107,14 @@ public class Scrabble {
 	}
 	
 	// SETTERS
+	// add a player with the given name
 	public void addPlayer(String name) {
 		playerList.add(new Player(name));
+	}
+	
+	// add the designated letter to the current word
+	public void addWordLetter(char letter) {
+		playerWord.add(letter);
 	}
 	
 	public void resetPlayers() {
@@ -171,10 +190,20 @@ public class Scrabble {
 		// stops when 7 tiles is reached or no more tiles available
 		public void fillHand() {
 			Random r = new Random();
+			/*
 			for(int i = 0; i < 7; i++){
 				if(!letters.isEmpty() && playerLetters.size() < 7){
 					int e = r.nextInt(letters.size());
 					playerLetters.add(letters.get(e));
+					letters.remove(e);
+				}
+			}
+			*/
+			
+			for(int i = 0; i < 7; i++){
+				if(!letters.isEmpty() && playerLetters.size() < 7){
+					int e = r.nextInt(letters.size());
+					playerLetters.add('*');
 					letters.remove(e);
 				}
 			}
