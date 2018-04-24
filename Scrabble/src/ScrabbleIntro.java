@@ -9,6 +9,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -116,9 +118,29 @@ public class ScrabbleIntro extends JPanel {
 		newGameInfo.setBorder(new EmptyBorder(10, 40, 10, 40));
 		
 		JTextField playerInfo = new JTextField("Player One Name");
+		JButton back = new JButton("Back");
+		JButton startGame = new JButton("Start Game");
+		JButton addButton = new JButton("Add Player");
+		
+		playerInfo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addButton.doClick();
+			}
+		});
+		playerInfo.addFocusListener(new FocusListener() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				playerInfo.select(0, playerInfo.getText().length());
+			}
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				playerInfo.select(0, 0);
+			}
+		});
 		playerInfo.setPreferredSize(new Dimension(200, 30));
 		
-		JButton startGame = new JButton("Start Game");
 		startGame.setVisible(false);
 		startGame.addActionListener(new ActionListener() {
 			@Override
@@ -136,7 +158,6 @@ public class ScrabbleIntro extends JPanel {
 			}
 		});
 		
-		JButton addButton = new JButton("Add Player");
 		addButton.addActionListener(new ActionListener() {			
 			@Override
 			// Add designated player name to Scrabble list of players
@@ -157,7 +178,6 @@ public class ScrabbleIntro extends JPanel {
 			}
 		});
 		
-		JButton back = new JButton("Back");
 		back.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
