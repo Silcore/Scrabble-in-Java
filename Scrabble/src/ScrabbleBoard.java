@@ -3,8 +3,6 @@
 // Semester Project (Scrabble.java)
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -21,16 +19,17 @@ public class ScrabbleBoard extends JPanel {
 	private final Scrabble scrabble = Scrabble.getInstance();
 
 	// made these member data because they need to be directly accessible
-	private HandPanel hPanel;
-	private ButtonPanel bPanel;
-	private InfoPanel iPanel;
+	private final HandPanel hPanel;
+	private final ButtonPanel bPanel;
+	private final InfoPanel iPanel;
+	private final GamePanel gPanel;
 
 	public ScrabbleBoard() {
 		super();
 		
 		iPanel = new InfoPanel();
 		bPanel = new ButtonPanel();
-		GamePanel gPanel = new GamePanel();
+		gPanel = new GamePanel();
 		hPanel = new HandPanel();
 		
 		super.setLayout(new BorderLayout());
@@ -38,6 +37,7 @@ public class ScrabbleBoard extends JPanel {
 		super.add(iPanel, BorderLayout.WEST);
 		super.add(gPanel, BorderLayout.CENTER);
 		super.add(hPanel, BorderLayout.SOUTH);
+		
 		// initialize players(name, tiles, score, turn order)
 		scrabble.setUpPlayers();
 		hPanel.setHand();
@@ -79,7 +79,7 @@ public class ScrabbleBoard extends JPanel {
 
 		// called whenever a turn is made, updates current player scores
 		public void updateScores() {
-			String info = "<html>Scores<br/><pre>";
+			String info = "<html><b>Scores</b><br/><pre>";
 			for(int i = 0; i < scrabble.getPlayerCount(); i++) {
 				info += scrabble.getPlayerName(i) + ": " + scrabble.getPlayerScore(i)+"<br/>";
 			}
