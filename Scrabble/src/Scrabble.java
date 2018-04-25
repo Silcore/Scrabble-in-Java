@@ -77,6 +77,9 @@ public class Scrabble {
 			instance = new Scrabble();
 		return instance;
 	}
+
+	// update board when valid turn is made
+	public void updateBoardState() {}
 	
 	// gets the character in the corresponding i, j index positions
 	public char getIndex(int i, int j) {

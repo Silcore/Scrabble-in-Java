@@ -114,19 +114,26 @@ public class ScrabbleBoard extends JPanel {
 
 			JPanel buttonSection = new JPanel(new FlowLayout(FlowLayout.CENTER));
 			buttonSection.setOpaque(false);
-			
+
+			// Initializing resetTurn Button
+			JButton resetTurn = new JButton("Reset Turn");
+			resetTurn.setFocusPainted(false);
+			resetTurn.setContentAreaFilled(false);
+			resetTurn.setOpaque(true);
+			resetTurn.setBackground(Color.GREEN);
+			resetTurn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					gPanel.reset();
+				}
+			});
+
 			// Initializing endTurn Button
 			JButton endTurn = new JButton("End Turn");
 			endTurn.setFocusPainted(false);
 			endTurn.setContentAreaFilled(false);
 			endTurn.setOpaque(true);
 			endTurn.setBackground(Color.CYAN);
-			endTurn.addActionListener(new ActionListener() {
-										@Override
-										public void actionPerformed(ActionEvent e) {
-											// Verify the word, and do other stuff
-										}
-									});
 			
 			// Initializing endGame Button
 			JButton endGame = new JButton("End Game");
@@ -136,9 +143,12 @@ public class ScrabbleBoard extends JPanel {
 			endGame.setBackground(Color.RED);
 			
 			// Adding Buttons to Button Section
+			buttonSection.add(resetTurn);
+			buttonSection.add(Box.createHorizontalStrut(20));
 			buttonSection.add(endTurn);
 			buttonSection.add(Box.createHorizontalStrut(20));
 			buttonSection.add(endGame);
+
 
 			// Formatting Panel
 			super.setLayout(new BorderLayout());
@@ -166,8 +176,12 @@ public class ScrabbleBoard extends JPanel {
 	// Inner class GamePanel contains the grid corresponding to the Scrabble object's boardState.
 	// This panel is displayed in the center of the ScrabbleBoard panel.
 	private class GamePanel extends JPanel {
+
+		private JLabel[][] board;
+
 		public GamePanel() {
 			super();
+			board = new JLabel[15][15];
 			buildPanel();
 		}
 
@@ -178,7 +192,31 @@ public class ScrabbleBoard extends JPanel {
 		}
 		
 		public void reset() {
-			buildPanel();
+			for(int i = 0; i < 15; i++) {
+				for(int j = 0; j < 15; j++) {
+					switch (scrabble.getIndex(i, j)) {
+						case 1:
+							board[i][j].setText("Double Word Score");
+							break;
+						case 2:
+							board[i][j].setText("Double Letter Score");
+							break;
+						case 3:
+							board[i][j].setText("Triple Letter Score");
+							break;
+						case 4:
+							board[i][j].setText("Double Word Score");
+							break;
+						case 6:
+							board[i][j].setText("Triple Word Score");
+							break;
+						default:
+							board[i][j].setText(Character.toString(scrabble.getIndex(i, j)));
+							break;
+					}
+					board[i][j].setText("<html><div style='text-align: center;'>" + board[i][j].getText() + "</div></html>");
+				}
+			}
 		}
 		
 		private void buildPanel() {
@@ -186,8 +224,9 @@ public class ScrabbleBoard extends JPanel {
 			super.setLayout(new GridLayout(15, 15));
 			for(int i = 0; i < 15; i++) {
 				for(int j = 0; j < 15; j++) {
-					JLabel label = new JLabel();
-					label.addMouseListener(new MouseAdapter() {
+					final int index1 = i, index2 = j;
+					board[i][j] = new JLabel();
+					board[i][j].addMouseListener(new MouseAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
 							if(hPanel.getCurrentPiece() != null) {
@@ -211,12 +250,12 @@ public class ScrabbleBoard extends JPanel {
 										public void actionPerformed(ActionEvent e) {
 											dialog.setVisible(false);
 											hPanel.getCurrentPiece().setText(letter.getText().substring(0,1).toUpperCase());
-											label.setText(hPanel.getCurrentPiece().getText());
+											board[index1][index2].setText(hPanel.getCurrentPiece().getText());
 											hPanel.getCurrentPiece().setVisible(false);
 											hPanel.resetCurrentPiece();
 											
 											// Need to add to ArrayList of currentWord
-											scrabble.addWordLetter(label.getText().charAt(0));
+											scrabble.addWordLetter(board[index1][index2].getText().charAt(0));
 										}
 									});
 									
@@ -231,12 +270,12 @@ public class ScrabbleBoard extends JPanel {
 								}
 								// If it isn't a blank piece, and isn't null
 								else {
-									label.setText(hPanel.getCurrentPiece().getText());
+									board[index1][index2].setText(hPanel.getCurrentPiece().getText());
 									hPanel.getCurrentPiece().setVisible(false);
 									hPanel.resetCurrentPiece();
 									
 									// Need to add to ArrayList of currentWord
-									scrabble.addWordLetter(label.getText().charAt(0));
+									scrabble.addWordLetter(board[index1][index2].getText().charAt(0));
 								}
 							}
 						}
@@ -244,38 +283,38 @@ public class ScrabbleBoard extends JPanel {
 
 					switch (scrabble.getIndex(i, j)) {
 						case 1:
-							label.setText("Double Word Score");
-							label.setBackground(new Color(229, 126, 221));
+							board[i][j].setText("Double Word Score");
+							board[i][j].setBackground(new Color(229, 126, 221));
 							break;
 						case 2:
-							label.setText("Double Letter Score");
-							label.setBackground(new Color(0, 255, 255));
+							board[i][j].setText("Double Letter Score");
+							board[i][j].setBackground(new Color(0, 255, 255));
 							break;
 						case 3:
-							label.setText("Triple Letter Score");
-							label.setBackground(new Color(120, 191, 0));
+							board[i][j].setText("Triple Letter Score");
+							board[i][j].setBackground(new Color(120, 191, 0));
 							break;
 						case 4:
-							label.setText("Double Word Score");
-							label.setBackground(new Color(0, 191, 191));
+							board[i][j].setText("Double Word Score");
+							board[i][j].setBackground(new Color(0, 191, 191));
 							break;
 						case 6:
-							label.setText("Triple Word Score");
-							label.setBackground(new Color(80, 127, 0));
+							board[i][j].setText("Triple Word Score");
+							board[i][j].setBackground(new Color(80, 127, 0));
 							break;
 						default:
-							label.setText(" ");
-							label.setBackground(new Color(255, 228, 174));
+							board[i][j].setText(" ");
+							board[i][j].setBackground(new Color(255, 228, 174));
 							break;
 					}
 
-					label.setOpaque(true);
-					label.setBorder(new MatteBorder(1, 1, 0, 0, Color.BLACK));
-					label.setHorizontalAlignment(SwingConstants.CENTER);
-					label.setVerticalAlignment(SwingConstants.CENTER);
-					label.setText("<html><div style='text-align: center;'>" + label.getText() + "</div></html>");
-					label.setFont(new Font("Serif", Font.BOLD, 10));
-					this.add(label);
+					board[i][j].setOpaque(true);
+					board[i][j].setBorder(new MatteBorder(1, 1, 0, 0, Color.BLACK));
+					board[i][j].setHorizontalAlignment(SwingConstants.CENTER);
+					board[i][j].setVerticalAlignment(SwingConstants.CENTER);
+					board[i][j].setText("<html><div style='text-align: center;'>" + board[i][j].getText() + "</div></html>");
+					board[i][j].setFont(new Font("Serif", Font.BOLD, 10));
+					this.add(board[i][j]);
 				}
 			}
 		}
