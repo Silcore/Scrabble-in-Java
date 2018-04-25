@@ -124,6 +124,7 @@ public class ScrabbleBoard extends JPanel {
 			resetTurn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					scrabble.resetState();
 					gPanel.reset();
 					hPanel.setHand();
 				}
@@ -146,8 +147,8 @@ public class ScrabbleBoard extends JPanel {
 					//update change hand panel
 					//update players scores label
 					//update player turn label
-					
-					
+
+
 				}
 			});
 			
@@ -258,16 +259,16 @@ public class ScrabbleBoard extends JPanel {
 									info.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 									info.setSize(100, 50);
 									info.setBorder(new EmptyBorder(10, 40, 10, 40));
-									
+
 									JTextField letter = new JTextField("");
 									letter.setSize(new Dimension(100, 50));
 									letter.addActionListener(new ActionListener() {
 										@Override
 										public void actionPerformed(ActionEvent e) {
-											dialog.setVisible(false);									
+											dialog.setVisible(false);
 											// Add the letter to the grid if it is valid
-											if(scrabble.isValid(index1, index2)) {
-												hPanel.getCurrentPiece().setText(letter.getText().substring(0,1).toUpperCase());
+											if (scrabble.isValid(index1, index2)) {
+												hPanel.getCurrentPiece().setText(letter.getText().substring(0, 1).toUpperCase());
 												board[index1][index2].setText(hPanel.getCurrentPiece().getText());
 												hPanel.getCurrentPiece().setVisible(false);
 												hPanel.resetCurrentPiece();
@@ -275,7 +276,6 @@ public class ScrabbleBoard extends JPanel {
 											}
 										}
 									});
-									
 									dialogPanel.add(info);
 									dialogPanel.add(letter);
 									dialog.add(dialogPanel);

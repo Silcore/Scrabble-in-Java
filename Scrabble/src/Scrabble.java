@@ -17,13 +17,14 @@ import java.util.regex.Pattern;
 public class Scrabble {
 	private static Scrabble instance = null;
 	private final char[][] boardState;
+	private final char[][] resetState;
 	private final char[][] initialBoard;
 	private final Map<Character, Integer> values;
 	private ArrayList<Character> letters;
 	private final ArrayList<Player> playerList;
 	private final ArrayList<Integer> turnList;
 	private int turnIndex, currentI, currentJ;
-	private boolean firstMove, doubleWord, tripleWord;
+	private boolean firstMove, doubleWord, tripleWord, firstTurn;
 
 	public static void main(String[] args) {
 		ScrabbleFrame frame = new ScrabbleFrame();
@@ -55,7 +56,12 @@ public class Scrabble {
 		for(int i = 0; i < boardState.length; i++)
 			for(int j = 0; j < boardState.length; j++)
 				initialBoard[i][j] = boardState[i][j];
-		
+
+		resetState = new char[15][15];
+		for(int i = 0; i < boardState.length; i++)
+			for(int j = 0; j < boardState.length; j++)
+				resetState[i][j] = boardState[i][j];
+
 		// finite array of letters, can be changed in the future
 		// letters are removed and placed into players hands
 		char[] lettersArray = new char[] {'A','A','A','A','A','A','A','A','A','B','B','C','C','D','D',
@@ -107,6 +113,7 @@ public class Scrabble {
 		turnIndex = 0;
 		// is it the first move?
 		firstMove = true;
+		firstTurn = true;
 		// indicates the current i and j
 		currentI = -1;
 		currentJ = -1;
@@ -122,9 +129,6 @@ public class Scrabble {
 			instance = new Scrabble();
 		return instance;
 	}
-
-	// update board when valid turn is made
-	public void updateBoardState() {}
 	
 	// gets the character in the corresponding i, j index positions
 	public char getIndex(int i, int j) {
@@ -339,6 +343,22 @@ public class Scrabble {
 		} catch (IndexOutOfBoundsException e) {
 			return false;
 		}
+	}
+
+	// reset board to state before player tile placement
+	public void resetState() {
+		if(firstTurn) firstMove = true;
+		for(int i = 0; i < boardState.length; i++)
+			for(int j = 0; j < boardState.length; j++)
+				boardState[i][j] = resetState[i][j];
+	}
+
+	// update reset state when valid turn is made
+	public void updateState() {
+		if(firstTurn) firstTurn = false;
+		for(int i = 0; i < boardState.length; i++)
+			for(int j = 0; j < boardState.length; j++)
+				resetState[i][j] = boardState[i][j];
 	}
 	
 	//	Private nested class Player which is responsible for per-player information.
