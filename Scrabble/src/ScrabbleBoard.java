@@ -124,7 +124,7 @@ public class ScrabbleBoard extends JPanel {
 			endTurn.addActionListener(new ActionListener() {
 										@Override
 										public void actionPerformed(ActionEvent e) {
-											System.out.println(scrabble.getCurrentWord());
+											// Verify the word, and do other stuff
 										}
 									});
 			
@@ -214,6 +214,9 @@ public class ScrabbleBoard extends JPanel {
 											label.setText(hPanel.getCurrentPiece().getText());
 											hPanel.getCurrentPiece().setVisible(false);
 											hPanel.resetCurrentPiece();
+											
+											// Need to add to ArrayList of currentWord
+											scrabble.addWordLetter(label.getText().charAt(0));
 										}
 									});
 									
@@ -231,10 +234,10 @@ public class ScrabbleBoard extends JPanel {
 									label.setText(hPanel.getCurrentPiece().getText());
 									hPanel.getCurrentPiece().setVisible(false);
 									hPanel.resetCurrentPiece();
+									
+									// Need to add to ArrayList of currentWord
+									scrabble.addWordLetter(label.getText().charAt(0));
 								}
-								
-								// Need to add to ArrayList of currentWord
-								scrabble.addWordLetter(label.getText().charAt(0));
 							}
 						}
 					});

@@ -2,10 +2,14 @@
 // COP3252 - Java
 // Semester Project (Scrabble.java)
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 //	Scrabble class (implemented as a Singleton) which contains all information pertaining to the game.
 //	Player information is stored in a private player class within Scrabble, handled by Scrabble methods.
@@ -56,9 +60,12 @@ public class Scrabble {
 		for(char i : lettersArray)
 			letters.add(i);
 		
+		// list of players
 		playerList = new ArrayList<>();
 		// turn order list
 		turnList = new ArrayList<>();
+		// current player word
+		playerWord = new ArrayList<>();
 		// index of current player turn
 		turnIndex = 0;
 	}
@@ -138,6 +145,7 @@ public class Scrabble {
 			turnList.add(i.getValue());
 	}
 
+	// UTILITIES
 	// go to next player, called whenever a turn is made
 	public void nextPlayer() {
 		turnIndex = ++turnIndex % playerList.size();
@@ -146,6 +154,24 @@ public class Scrabble {
 	// refill the tile of a player after a turn is made, called before changing players
 	public void refillCurrentPlayer() {
 		playerList.get(turnList.get(turnIndex)).fillHand();
+	}
+	
+	// verifies if the playerWord is legitimate, and does it super quickly
+	public boolean verifyWord() {
+		try (Scanner textScanner = new Scanner(new File("src/words.txt"))) {
+			StringBuilder builder = new StringBuilder(playerWord.size());
+			for(Character c : playerWord)
+				builder.append(c);
+			
+			Pattern pattern = Pattern.compile(builder.toString().toLowerCase());
+			
+			if(textScanner.findWithinHorizon(pattern, 0) != null)
+				return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 	
 	//	Private nested class Player which is responsible for per-player information.
