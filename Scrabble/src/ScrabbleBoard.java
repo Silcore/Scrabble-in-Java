@@ -125,6 +125,7 @@ public class ScrabbleBoard extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					gPanel.reset();
+					hPanel.setHand();
 				}
 			});
 
@@ -134,6 +135,19 @@ public class ScrabbleBoard extends JPanel {
 			endTurn.setContentAreaFilled(false);
 			endTurn.setOpaque(true);
 			endTurn.setBackground(Color.CYAN);
+			endTurn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					//update current player score
+					//fill current player hand
+					//update boardstate
+					//update board
+					//change players
+					//update change hand panel
+					//update players scores label
+					//update player turn label
+				}
+			});
 			
 			// Initializing endGame Button
 			JButton endGame = new JButton("End Game");
@@ -322,12 +336,14 @@ public class ScrabbleBoard extends JPanel {
 	
 	private class HandPanel extends JPanel{
 		private JLabel currentPiece;
+		private ArrayList<Character> hand;
 		
 		// create jpanels for all current players tiles, is called whenever turn is ended
 		// needs to be function which is explicitly called
 		// cannot be done in constructor because players will not have been initialized yet
 		public void setHand(){
-			ArrayList<Character> hand = scrabble.getCurrentPlayerHand();
+			removeAll();
+			hand = scrabble.getCurrentPlayerHand();
 			super.setLayout(new FlowLayout(FlowLayout.CENTER,50,0));
 			for(Character i : hand) {
 				JLabel tile = new JLabel(i.toString());
