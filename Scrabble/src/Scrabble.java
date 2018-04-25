@@ -16,12 +16,12 @@ import java.util.regex.Pattern;
 public class Scrabble {
 	private static Scrabble instance = null;
 	private final char[][] boardState;
-	private ArrayList<Character> playerWord;
 	private ArrayList<Character> letters;
 	private final ArrayList<Player> playerList;
 	private final ArrayList<Integer> turnList;
-	private int turnIndex;
-	
+	private int turnIndex, currentI, currentJ;
+	private boolean firstMove;
+
 	public static void main(String[] args) {
 		ScrabbleFrame frame = new ScrabbleFrame();
 	}
@@ -64,10 +64,14 @@ public class Scrabble {
 		playerList = new ArrayList<>();
 		// turn order list
 		turnList = new ArrayList<>();
-		// current player word
-		playerWord = new ArrayList<>();
 		// index of current player turn
 		turnIndex = 0;
+		// counter of what turn it is
+		firstMove = true;
+		
+		// indicates the current i and j
+		currentI = -1;
+		currentJ = -1;
 	}
 	
 	// GETTERS
@@ -89,11 +93,6 @@ public class Scrabble {
 	// gets the total number of players
 	public int getPlayerCount() {
 		return playerList.size();
-	}
-	
-	// get the current playerWord
-	public ArrayList<Character> getCurrentWord() {
-		return playerWord;
 	}
 	
 	//array with all current players tiles, up to 7 tiles
@@ -122,9 +121,9 @@ public class Scrabble {
 		playerList.add(new Player(name));
 	}
 	
-	// add the designated letter to the current word
-	public void addWordLetter(char letter) {
-		playerWord.add(letter);
+	// add the designated letter to the board
+	public void addLetter(char letter, int i, int j) {
+		boardState[i][j] = letter;
 	}
 	
 	public void resetPlayers() {
@@ -160,13 +159,9 @@ public class Scrabble {
 	}
 	
 	// verifies if the playerWord is legitimate, and does it super quickly
-	public boolean verifyWord() {
-		try (Scanner textScanner = new Scanner(new File("src/words.txt"))) {
-			StringBuilder builder = new StringBuilder(playerWord.size());
-			for(Character c : playerWord)
-				builder.append(c);
-			
-			Pattern pattern = Pattern.compile(builder.toString().toLowerCase());
+	public boolean verifyWord(String word) {
+		try (Scanner textScanner = new Scanner(new File("src/words.txt"))) {			
+			Pattern pattern = Pattern.compile(word.toLowerCase());
 			
 			if(textScanner.findWithinHorizon(pattern, 0) != null)
 				return true;
@@ -175,6 +170,46 @@ public class Scrabble {
 		}
 		
 		return false;
+	}
+	
+	// checks if the i, j position is valid
+	// handles all edge cases (perimeter pieces, corner pieces, etc)
+	public boolean isValid(int i, int j) {
+		// if there is currently a letter there, it is not valid
+		if(isLetter(i, j))
+			return false;
+		
+		// if it's not the first move
+		if(!firstMove) {
+			if(isLetter(i+1, j) || isLetter(i-1, j) || isLetter(i, j+1) || isLetter(i, j-1)) {
+				currentI = i;
+				currentJ = j;
+				return true;
+			}
+		}
+		// if it is the first turn
+		else {
+			// must start in the middle
+			if(i == 7 && j == 7) {
+				currentI = i;
+				currentJ = j;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	// checks if the i, j is a letter. if it's out of bounds, catch exception and return false
+	// saves unnecessary code in the isValid function
+	public boolean isLetter(int i, int j) {
+		boolean retValue;
+		try {
+			retValue = Character.isLetter(boardState[i][j]);
+			return retValue;
+		} catch (IndexOutOfBoundsException e) {
+			return false;
+		}
 	}
 	
 	//	Private nested class Player which is responsible for per-player information.

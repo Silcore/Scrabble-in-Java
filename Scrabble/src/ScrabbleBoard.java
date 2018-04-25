@@ -262,14 +262,15 @@ public class ScrabbleBoard extends JPanel {
 									letter.addActionListener(new ActionListener() {
 										@Override
 										public void actionPerformed(ActionEvent e) {
-											dialog.setVisible(false);
-											hPanel.getCurrentPiece().setText(letter.getText().substring(0,1).toUpperCase());
-											board[index1][index2].setText(hPanel.getCurrentPiece().getText());
-											hPanel.getCurrentPiece().setVisible(false);
-											hPanel.resetCurrentPiece();
-											
-											// Need to add to ArrayList of currentWord
-											scrabble.addWordLetter(board[index1][index2].getText().charAt(0));
+											dialog.setVisible(false);									
+											// Add the letter to the grid if it is valid
+											if(scrabble.isValid(index1, index2)) {
+												hPanel.getCurrentPiece().setText(letter.getText().substring(0,1).toUpperCase());
+												board[index1][index2].setText(hPanel.getCurrentPiece().getText());
+												hPanel.getCurrentPiece().setVisible(false);
+												hPanel.resetCurrentPiece();
+												scrabble.addLetter(board[index1][index2].getText().charAt(0), index1, index2);
+											}
 										}
 									});
 									
@@ -283,13 +284,14 @@ public class ScrabbleBoard extends JPanel {
 									dialog.setVisible(true);
 								}
 								// If it isn't a blank piece, and isn't null
-								else {
-									board[index1][index2].setText(hPanel.getCurrentPiece().getText());
-									hPanel.getCurrentPiece().setVisible(false);
-									hPanel.resetCurrentPiece();
-									
-									// Need to add to ArrayList of currentWord
-									scrabble.addWordLetter(board[index1][index2].getText().charAt(0));
+								else {									
+									// Add the letter to the grid if it is valid
+									if(scrabble.isValid(index1, index2)) {
+										board[index1][index2].setText(hPanel.getCurrentPiece().getText());
+										hPanel.getCurrentPiece().setVisible(false);
+										hPanel.resetCurrentPiece();
+										scrabble.addLetter(board[index1][index2].getText().charAt(0), index1, index2);
+									}
 								}
 							}
 						}
