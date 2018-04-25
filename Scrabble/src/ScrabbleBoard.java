@@ -146,6 +146,8 @@ public class ScrabbleBoard extends JPanel {
 					//update change hand panel
 					//update players scores label
 					//update player turn label
+					
+					
 				}
 			});
 			

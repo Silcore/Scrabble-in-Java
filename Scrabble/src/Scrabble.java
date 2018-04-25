@@ -5,6 +5,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
@@ -16,11 +17,13 @@ import java.util.regex.Pattern;
 public class Scrabble {
 	private static Scrabble instance = null;
 	private final char[][] boardState;
+	private final char[][] initialBoard;
+	private final Map<Character, Integer> values;
 	private ArrayList<Character> letters;
 	private final ArrayList<Player> playerList;
 	private final ArrayList<Integer> turnList;
 	private int turnIndex, currentI, currentJ;
-	private boolean firstMove;
+	private boolean firstMove, doubleWord, tripleWord;
 
 	public static void main(String[] args) {
 		ScrabbleFrame frame = new ScrabbleFrame();
@@ -47,6 +50,12 @@ public class Scrabble {
 								   {0,4,0,0,0,3,0,0,0,3,0,0,0,4,0},
 								   {6,0,0,2,0,0,0,6,0,0,0,2,0,0,6}};
 
+		// Duplicate boardState into initialBoard for reference
+		initialBoard = new char[15][15];
+		for(int i = 0; i < boardState.length; i++)
+			for(int j = 0; j < boardState.length; j++)
+				initialBoard[i][j] = boardState[i][j];
+		
 		// finite array of letters, can be changed in the future
 		// letters are removed and placed into players hands
 		char[] lettersArray = new char[] {'A','A','A','A','A','A','A','A','A','B','B','C','C','D','D',
@@ -56,6 +65,36 @@ public class Scrabble {
 							  'O','O','O','O','O','O','O','P','P','Q','R','R','R','R','R',
 							  'R','S','S','S','S','T','T','T','T','T','T','U','U','U','U',
 							  'V','V','W','W','X','Y','Y', 'Z','*','*'};
+		
+		// values of each character
+		values = new HashMap<>();
+		values.put('A', 1);
+		values.put('B', 3);
+		values.put('C', 3);
+		values.put('D', 2);
+		values.put('E', 1);
+		values.put('F', 4);
+		values.put('G', 2);
+		values.put('H', 4);
+		values.put('I', 1);
+		values.put('J', 8);
+		values.put('K', 5);
+		values.put('L', 1);
+		values.put('M', 3);
+		values.put('N', 1);
+		values.put('O', 1);
+		values.put('P', 3);
+		values.put('Q', 10);
+		values.put('R', 1);
+		values.put('S', 1);
+		values.put('T', 1);
+		values.put('U', 1);
+		values.put('V', 4);
+		values.put('W', 4);
+		values.put('X', 8);
+		values.put('Y', 4);
+		values.put('Z', 10);
+				
 		letters = new ArrayList<>();
 		for(char i : lettersArray)
 			letters.add(i);
@@ -66,12 +105,14 @@ public class Scrabble {
 		turnList = new ArrayList<>();
 		// index of current player turn
 		turnIndex = 0;
-		// counter of what turn it is
+		// is it the first move?
 		firstMove = true;
-		
 		// indicates the current i and j
 		currentI = -1;
 		currentJ = -1;
+		// is the current word double or triple?
+		doubleWord = false;
+		tripleWord = false;
 	}
 	
 	// GETTERS
@@ -126,6 +167,32 @@ public class Scrabble {
 		boardState[i][j] = letter;
 	}
 	
+	// calculate score of character in i, j position
+	public int calculateScore(char c, int i, int j) {
+		switch (initialBoard[i][j]) {
+			case 1:
+				doubleWord = true;
+				return values.get(Character.toUpperCase(c));
+			case 2:
+				return values.get(Character.toUpperCase(c)) * 2;
+			case 3:
+				return values.get(Character.toUpperCase(c)) * 3;
+			case 4:
+				doubleWord = true;
+				return values.get(Character.toUpperCase(c));
+			case 6:
+				tripleWord = true;
+				return values.get(Character.toUpperCase(c));
+			default:
+				return values.get(Character.toUpperCase(c));
+		}
+	}
+	
+	// add score to current player
+	public void addScore(int score) {
+		playerList.get(turnList.get(turnIndex)).playerScore += score;
+	}
+	
 	public void resetPlayers() {
 		playerList.clear();
 	}
@@ -145,6 +212,67 @@ public class Scrabble {
 		// populate the turn list
 		for(Map.Entry<Character,Integer> i : turnsInfo.entrySet())
 			turnList.add(i.getValue());
+	}
+	
+	public boolean endTurn() {
+		boolean completeTurn = false;
+		
+		// return false if no changes have been made
+		if(currentI == -1 && currentJ == -1)
+			return completeTurn;
+		
+		// check all words that have been made
+		int i = currentI;
+		int j = currentJ;
+		int scoreTotal = 0;
+		StringBuilder builder = new StringBuilder();
+		
+		// move marker horizontally to end of letters
+		while(isLetter(i, j))
+			i++;
+		
+		// move backwards to start of word, capturing all letters
+		while(isLetter(--i, j)) {
+			builder.append(boardState[i][j]);
+			scoreTotal += calculateScore(boardState[i][j], i, j);
+		}
+		
+		if(verifyWord(builder.toString())) {
+			completeTurn = true;
+			addScore(scoreTotal);
+		}
+		else if(verifyWord(builder.reverse().toString())) {
+			completeTurn = true;
+			addScore(scoreTotal);
+		}
+		
+		// clear builder
+		builder = new StringBuilder();
+		// reset values
+		i = currentI;
+		j = currentJ;
+		scoreTotal = 0;
+		
+		// move marker vertically to end of letters
+		while(isLetter(i, j))
+			j++;
+		
+		// move vertically to start of word, capturing all letters
+		while(isLetter(i, --j)) {
+			builder.append(boardState[i][j]);
+			scoreTotal += calculateScore(boardState[i][j], i, j);
+		}
+		
+		if(verifyWord(builder.toString())) {
+			completeTurn = true;
+			addScore(scoreTotal);
+		}
+		else if(verifyWord(builder.reverse().toString())) {
+			completeTurn = true;
+			addScore(scoreTotal);
+		}
+		
+		return completeTurn;
 	}
 
 	// UTILITIES
@@ -193,6 +321,7 @@ public class Scrabble {
 			if(i == 7 && j == 7) {
 				currentI = i;
 				currentJ = j;
+				firstMove = false;
 				return true;
 			}
 		}
