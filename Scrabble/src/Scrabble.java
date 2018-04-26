@@ -206,16 +206,17 @@ public class Scrabble {
 		// used to figure out turn order
 		// get hand, get first drawn char and get player num
 		// treemap is automatically sorted by the letter which determines the turn order
-		TreeMap<Character,Integer> turnsInfo = new TreeMap<>();
+		TreeMap<String,Integer> turnsInfo = new TreeMap<>();
 		int e = 0;
 		for(Player i : playerList) {
 			i.fillHand();
-			turnsInfo.put(i.getFirstLetter(),e);
+			turnsInfo.put(i.getFirstLetter()+String.valueOf(e),e);
 			e++;
 		}
 		// populate the turn list
-		for(Map.Entry<Character,Integer> i : turnsInfo.entrySet())
+		for(Map.Entry<String,Integer> i : turnsInfo.entrySet())
 			turnList.add(i.getValue());
+		System.out.println(turnsInfo);
 	}
 	
 	public boolean endTurn() {

@@ -68,11 +68,15 @@ public class ScrabbleBoard extends JPanel {
 	// Inner class InfoPanel contains the distribution of letters and current player scores.
 	// This panel is displayed on the left-hand side of the ScrabbleBoard panel.
 	private class InfoPanel extends JPanel {
+
+		private JLabel scores;
+		private JLabel infoBox;
+
 		public InfoPanel() {
 			super();
 
 			// Initializing infoBox and scrabbleBox Labels
-			JLabel infoBox = new JLabel("<html>Letter Distribution<br/><pre>A-9  J-1  S-4"
+			infoBox = new JLabel("<html>Letter Distribution<br/><pre>A-9  J-1  S-4"
 					+ "<br/>B-2  K-1  T-6<br/>C-2  L-4  U-4<br/>D-4  M-2  V-2"
 					+ "<br/>E-12 N-6  W-2<br/>F-2  O-8  X-1<br/>G-3  P-2  Y-2"
 					+ "<br/>H-2  Q-1  Z-1<br/>I-9  R-6<br/>BLANK-2</pre></html>", SwingConstants.CENTER);
@@ -94,12 +98,14 @@ public class ScrabbleBoard extends JPanel {
 
 		// called whenever a turn is made, updates current player scores
 		public void updateScores() {
+			removeAll();
+			super.add(infoBox, BorderLayout.SOUTH);
 			String info = "<html><b>Scores</b><br/><pre>";
 			for(int i = 0; i < scrabble.getPlayerCount(); i++) {
 				info += scrabble.getPlayerName(i) + ": " + scrabble.getPlayerScore(i)+"<br/>";
 			}
 			info += "</pre></html>";
-			JLabel scores = new JLabel(info, SwingConstants.CENTER);
+			scores = new JLabel(info, SwingConstants.CENTER);
 			scores.setFont(new Font("Serif", Font.PLAIN, 14));
 			super.add(scores, BorderLayout.NORTH);
 			repaint();
@@ -109,9 +115,11 @@ public class ScrabbleBoard extends JPanel {
 	// Inner class ButtonPanel contains the end-turn button and current player information.
 	// This panel is displayed at the top of the ScrabbleBoard panel.
 	private class ButtonPanel extends JPanel {
+
+		private JLabel playerName;
+
 		public ButtonPanel() {
 			super();
-
 			JPanel buttonSection = new JPanel(new FlowLayout(FlowLayout.CENTER));
 			buttonSection.setOpaque(false);
 
@@ -195,9 +203,12 @@ public class ScrabbleBoard extends JPanel {
 		// called whenever a turn is made, updates current player at top
 		// needs to be called after players have been initialized, not in this panel's constructor
 		public void showCurrentPlayer() {
-			JLabel playerName = new JLabel(scrabble.getCurrentPlayerName() + "'s Turn" , SwingConstants.CENTER);
-			playerName.setFont(new Font("Serif", Font.BOLD, 30));
-			super.add(playerName, BorderLayout.LINE_START);
+			if(playerName == null) {
+				playerName = new JLabel(scrabble.getCurrentPlayerName() + "'s Turn" , SwingConstants.CENTER);
+				playerName.setFont(new Font("Serif", Font.BOLD, 30));
+				super.add(playerName, BorderLayout.LINE_START);
+			}
+			else playerName.setText(scrabble.getCurrentPlayerName() + "'s Turn" );
 			repaint();
 		}
 	}
