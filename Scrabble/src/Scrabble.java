@@ -183,6 +183,11 @@ public class Scrabble {
 	}
 	
 	// SETTERS
+	// reset current player hand (for reset turn)
+	public void resetPlayerHand() {
+		playerList.get(turnList.get(turnIndex)).resetHand();
+	}
+	
 	// add a player with the given name
 	public void addPlayer(String name) {
 		playerList.add(new Player(name));
@@ -194,7 +199,7 @@ public class Scrabble {
 		
 		for(int i = 0; i < list.size(); i++) {
 			if(Character.toLowerCase(list.get(i)) == (Character.toLowerCase(c))) {
-				playerList.get(turnList.get(turnIndex)).playerLetters.remove(i);
+				list.remove(i);
 				break;
 			}
 		}
@@ -433,6 +438,7 @@ public class Scrabble {
 		private final String playerName;
 		private int playerScore;
 		private ArrayList<Character> playerLetters;
+		private ArrayList<Character> resetHand;
 		
 		// CONSTRUCTOR
 		public Player(String name) {
@@ -444,6 +450,7 @@ public class Scrabble {
 			playerName = name;
 			playerScore = 0;
 			playerLetters = new ArrayList<>();
+			resetHand = new ArrayList<>(playerLetters);
 		}
 
 		// GETTERS
@@ -478,6 +485,7 @@ public class Scrabble {
 				}
 			}
 			
+			resetHand = new ArrayList<>(playerLetters);
 			
 			/*
 			for(int i = 0; i < 7; i++){
@@ -488,6 +496,13 @@ public class Scrabble {
 				}
 			}
 			*/
+		}
+		
+		public void resetHand() {
+			playerLetters.clear();
+			
+			for(int i = 0; i < resetHand.size(); i++)
+				playerLetters.add(resetHand.get(i));
 		}
 	}
 }

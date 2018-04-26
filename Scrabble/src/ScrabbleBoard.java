@@ -133,6 +133,7 @@ public class ScrabbleBoard extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					scrabble.resetState();
+					scrabble.resetPlayerHand();
 					gPanel.reset();
 					hPanel.setHand();
 				}
