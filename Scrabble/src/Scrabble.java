@@ -183,6 +183,11 @@ public class Scrabble {
 	}
 	
 	// SETTERS
+	// reset current player hand (for reset turn)
+	public void resetPlayerHand() {
+		playerList.get(turnList.get(turnIndex)).resetHand();
+	}
+	
 	// add a player with the given name
 	public void addPlayer(String name) {
 		playerList.add(new Player(name));
@@ -194,7 +199,7 @@ public class Scrabble {
 
 		for(int i = 0; i < list.size(); i++) {
 			if(Character.toLowerCase(list.get(i)) == (Character.toLowerCase(c))) {
-				playerList.get(turnList.get(turnIndex)).playerLetters.remove(i);
+				list.remove(i);
 				break;
 			}
 		}
@@ -437,7 +442,11 @@ public class Scrabble {
 		private final String playerName;
 		private int playerScore;
 		private ArrayList<Character> playerLetters;
+<<<<<<< HEAD
 		private ArrayList<Character> oldLetters;
+=======
+		private ArrayList<Character> resetHand;
+>>>>>>> e91020c63428552d5d997d9c13197b5821dd2460
 		
 		// CONSTRUCTOR
 		public Player(String name) {
@@ -449,7 +458,11 @@ public class Scrabble {
 			playerName = name;
 			playerScore = 0;
 			playerLetters = new ArrayList<>();
+<<<<<<< HEAD
 			oldLetters = new ArrayList<>();
+=======
+			resetHand = new ArrayList<>(playerLetters);
+>>>>>>> e91020c63428552d5d997d9c13197b5821dd2460
 		}
 
 		// GETTERS
@@ -483,8 +496,14 @@ public class Scrabble {
 					letters.remove(e);
 				}
 			}
+<<<<<<< HEAD
 			oldLetters.clear();
 			oldLetters.addAll(playerLetters);
+=======
+			
+			resetHand = new ArrayList<>(playerLetters);
+			
+>>>>>>> e91020c63428552d5d997d9c13197b5821dd2460
 			/*
 			for(int i = 0; i < 7; i++){
 				if(!letters.isEmpty() && playerLetters.size() < 7){
@@ -495,9 +514,18 @@ public class Scrabble {
 			}
 			*/
 		}
+<<<<<<< HEAD
 		public void resetHand() {
 			playerLetters.clear();
 			playerLetters.addAll(oldLetters);
+=======
+		
+		public void resetHand() {
+			playerLetters.clear();
+			
+			for(int i = 0; i < resetHand.size(); i++)
+				playerLetters.add(resetHand.get(i));
+>>>>>>> e91020c63428552d5d997d9c13197b5821dd2460
 		}
 	}
 }
