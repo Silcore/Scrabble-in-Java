@@ -9,4 +9,4 @@ FSU COP3252 Java semester project focused on recreating Scrabble in Java using t
 - [X] Verify selected tiles are +/-1 vertical or horizontal to previous piece.
 - [X] Verify constructed player word is an English word.
 - [X] Update player scores when turn is made.
-- [ ] Finish Scrabble class and game logic.
+- [X] Finish Scrabble class and game logic.
