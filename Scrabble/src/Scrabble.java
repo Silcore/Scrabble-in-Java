@@ -303,7 +303,10 @@ public class Scrabble {
 		firstMove = false;
 		currentI = -1;
 		currentJ = -1;
-			
+		
+		if(completeTurn)
+			updateState();
+		
 		return completeTurn;
 	}
 
