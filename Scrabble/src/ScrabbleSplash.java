@@ -16,7 +16,7 @@ public class ScrabbleSplash extends JPanel {
 		super();
 		super.setLayout(new BorderLayout());
 		JLabel label = new JLabel();
-		label.setIcon(new ImageIcon("src/ScrabbleIntroArt.png"));
+		label.setIcon(new ImageIcon(Scrabble.class.getResource("ScrabbleIntroArt.png")));
 		super.add(label, BorderLayout.CENTER);
 	}
 	

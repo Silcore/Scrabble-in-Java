@@ -2,8 +2,8 @@
 // COP3252 - Java
 // Semester Project (Scrabble.java)
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -320,12 +320,12 @@ public class Scrabble {
 	
 	// verifies if the playerWord is legitimate, and does it super quickly
 	public boolean verifyWord(String word) {
-		try (Scanner textScanner = new Scanner(new File("src/words.txt"))) {			
+		try (Scanner textScanner = new Scanner(new InputStreamReader(getClass().getResourceAsStream("words.txt")))) {			
 			Pattern pattern = Pattern.compile(word.toLowerCase());
 			
 			if(textScanner.findWithinHorizon(pattern, 0) != null)
 				return true;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
