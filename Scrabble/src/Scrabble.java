@@ -23,7 +23,8 @@ public class Scrabble {
 	private final ArrayList<Player> playerList;
 	private final ArrayList<Integer> turnList;
 	private int turnIndex, currentI, currentJ;
-	private boolean firstMove, doubleWord, tripleWord, firstTurn;
+	private boolean firstMove, doubleWord, tripleWord;
+	private int turn;
 
 	public static void main(String[] args) {
 		ScrabbleFrame frame = new ScrabbleFrame();
@@ -112,16 +113,39 @@ public class Scrabble {
 		turnIndex = 0;
 		// is it the first move?
 		firstMove = true;
-		firstTurn = true;
 		// indicates the current i and j
 		currentI = -1;
 		currentJ = -1;
 		// is the current word double or triple?
 		doubleWord = false;
 		tripleWord = false;
+
+		turn = 1;
 	}
 	
 	// GETTERS
+	// check if turn number
+	public int getTurn(){
+		return turn;
+	}
+
+	// get array of winner indexes
+	public ArrayList<Integer> getWinners() {
+		int index = 0;
+		ArrayList<Integer> winners = new ArrayList<>();
+		for(int i = 1; i < playerList.size(); i++) {
+			if(playerList.get(i).getPlayerScore() >= playerList.get(index).getPlayerScore()) {
+				index = i;
+			}
+		}
+		for(int i = 0; i < playerList.size(); i++) {
+			if(playerList.get(i).getPlayerScore() == playerList.get(index).getPlayerScore()) {
+				winners.add(i);
+			}
+		}
+		return winners;
+	}
+
 	// gets the singleton instance of Scrabble
 	public static Scrabble getInstance() {
 		if(instance == null)
@@ -215,7 +239,6 @@ public class Scrabble {
 		// populate the turn list
 		for(Map.Entry<String,Integer> i : turnsInfo.entrySet())
 			turnList.add(i.getValue());
-		System.out.println(turnsInfo);
 	}
 	
 	public boolean endTurn() {
@@ -379,7 +402,7 @@ public class Scrabble {
 
 	// reset board to state before player tile placement
 	public void resetState() {
-		if(firstTurn) firstMove = true;
+		if(turn == 1) firstMove = true;
 		for(int i = 0; i < boardState.length; i++)
 			for(int j = 0; j < boardState.length; j++)
 				boardState[i][j] = resetState[i][j];
@@ -387,7 +410,7 @@ public class Scrabble {
 
 	// update reset state when valid turn is made
 	public void updateState() {
-		if(firstTurn) firstTurn = false;
+		turn++;
 		for(int i = 0; i < boardState.length; i++)
 			for(int j = 0; j < boardState.length; j++)
 				resetState[i][j] = boardState[i][j];

@@ -178,6 +178,52 @@ public class ScrabbleBoard extends JPanel {
 			endGame.setContentAreaFilled(false);
 			endGame.setOpaque(true);
 			endGame.setBackground(Color.RED);
+			endGame.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(scrabble.getTurn() > scrabble.getPlayerCount()) {
+						JDialog dialog = new JDialog();
+						JPanel dialogPanel = new JPanel();
+						dialogPanel.setLayout(new BoxLayout(dialogPanel, BoxLayout.Y_AXIS));
+
+						JLabel info = new JLabel();
+						info.setFont(new Font("Helvetica", Font.PLAIN, 24));
+						info.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+						info.setSize(100, 50);
+						info.setBorder(new EmptyBorder(10, 40, 10, 40));
+
+						//multiple winners
+						if(scrabble.getWinners().size() == 1) info.setText("<html>Congratulations<br/>"+scrabble.getPlayerName(scrabble.getWinners().get(0))+"</html>");
+						else {
+							String text = "<html>Congratulations<br/>";
+							for(int i : scrabble.getWinners()) {
+								text+= scrabble.getPlayerName(scrabble.getWinners().get(i))+"<br/>";
+							}
+							text +="</html>";
+							info.setText(text);
+						}
+
+						dialogPanel.add(info);
+						JButton exitBtn = new JButton("Exit");
+						exitBtn.setFocusPainted(false);
+						exitBtn.setContentAreaFilled(false);
+						exitBtn.setOpaque(true);
+						exitBtn.setBackground(Color.PINK);
+						exitBtn.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								System.exit(0);
+							}
+						});
+						dialogPanel.add(exitBtn);
+						dialog.add(dialogPanel);
+						dialog.setSize(300, 150);
+						dialog.setUndecorated(true);
+						dialog.setLocationRelativeTo(null);
+						dialog.setVisible(true);
+					}
+				}
+			});
 			
 			// Adding Buttons to Button Section
 			buttonSection.add(resetTurn);
@@ -237,18 +283,23 @@ public class ScrabbleBoard extends JPanel {
 					switch (scrabble.getIndex(i, j)) {
 						case 1:
 							board[i][j].setText("Double Word Score");
+							board[i][j].setFont(new Font("Serif", Font.BOLD, 10));
 							break;
 						case 2:
 							board[i][j].setText("Double Letter Score");
+							board[i][j].setFont(new Font("Serif", Font.BOLD, 10));
 							break;
 						case 3:
 							board[i][j].setText("Triple Letter Score");
+							board[i][j].setFont(new Font("Serif", Font.BOLD, 10));
 							break;
 						case 4:
 							board[i][j].setText("Double Word Score");
+							board[i][j].setFont(new Font("Serif", Font.BOLD, 10));
 							break;
 						case 6:
 							board[i][j].setText("Triple Word Score");
+							board[i][j].setFont(new Font("Serif", Font.BOLD, 10));
 							break;
 						default:
 							board[i][j].setText(Character.toString(scrabble.getIndex(i, j)));
@@ -293,6 +344,7 @@ public class ScrabbleBoard extends JPanel {
 											if (scrabble.isValid(index1, index2)) {
 												hPanel.getCurrentPiece().setText(letter.getText().substring(0, 1).toUpperCase());
 												board[index1][index2].setText(hPanel.getCurrentPiece().getText());
+												board[index1][index2].setFont(new Font("Serif", Font.BOLD, 34));
 												hPanel.getCurrentPiece().setVisible(false);
 												hPanel.resetCurrentPiece();
 												scrabble.addLetter(board[index1][index2].getText().charAt(0), index1, index2);
@@ -313,6 +365,7 @@ public class ScrabbleBoard extends JPanel {
 									// Add the letter to the grid if it is valid
 									if(scrabble.isValid(index1, index2)) {
 										board[index1][index2].setText(hPanel.getCurrentPiece().getText());
+										board[index1][index2].setFont(new Font("Serif", Font.BOLD, 34));
 										hPanel.getCurrentPiece().setVisible(false);
 										hPanel.resetCurrentPiece();
 										scrabble.addLetter(board[index1][index2].getText().charAt(0), index1, index2);
