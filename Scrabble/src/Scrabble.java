@@ -191,7 +191,7 @@ public class Scrabble {
 	// remove the designated letter from the player's hand
 	public void removePlayerLetter(char c) {
 		ArrayList<Character> list = playerList.get(turnList.get(turnIndex)).playerLetters;
-		
+
 		for(int i = 0; i < list.size(); i++) {
 			if(Character.toLowerCase(list.get(i)) == (Character.toLowerCase(c))) {
 				playerList.get(turnList.get(turnIndex)).playerLetters.remove(i);
@@ -353,6 +353,10 @@ public class Scrabble {
 	public void refillCurrentPlayer() {
 		playerList.get(turnList.get(turnIndex)).fillHand();
 	}
+
+	public void resetCurrentPlayer() {
+		playerList.get(turnList.get(turnIndex)).resetHand();
+	}
 	
 	// verifies if the playerWord is legitimate, and does it super quickly
 	public boolean verifyWord(String word) {
@@ -433,6 +437,7 @@ public class Scrabble {
 		private final String playerName;
 		private int playerScore;
 		private ArrayList<Character> playerLetters;
+		private ArrayList<Character> oldLetters;
 		
 		// CONSTRUCTOR
 		public Player(String name) {
@@ -444,6 +449,7 @@ public class Scrabble {
 			playerName = name;
 			playerScore = 0;
 			playerLetters = new ArrayList<>();
+			oldLetters = new ArrayList<>();
 		}
 
 		// GETTERS
@@ -477,8 +483,8 @@ public class Scrabble {
 					letters.remove(e);
 				}
 			}
-			
-			
+			oldLetters.clear();
+			oldLetters.addAll(playerLetters);
 			/*
 			for(int i = 0; i < 7; i++){
 				if(!letters.isEmpty() && playerLetters.size() < 7){
@@ -488,6 +494,10 @@ public class Scrabble {
 				}
 			}
 			*/
+		}
+		public void resetHand() {
+			playerLetters.clear();
+			playerLetters.addAll(oldLetters);
 		}
 	}
 }
