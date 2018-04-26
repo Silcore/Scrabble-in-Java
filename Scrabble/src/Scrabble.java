@@ -2,13 +2,12 @@
 // COP3252 - Java
 // Semester Project (Scrabble.java)
 
-import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
@@ -323,11 +322,13 @@ public class Scrabble {
 	
 	// verifies if the playerWord is legitimate, and does it super quickly
 	public boolean verifyWord(String word) {
-		try (Scanner textScanner = new Scanner(new InputStreamReader(getClass().getResourceAsStream("words.txt")))) {			
-			Pattern pattern = Pattern.compile(word.toLowerCase());
-			
-			if(textScanner.findWithinHorizon(pattern, 0) != null)
-				return true;
+		String line;
+		
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("words.txt")))) {			
+			while((line = reader.readLine()) != null) {
+				if(line.equalsIgnoreCase(word))
+					return true;
+			}	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
