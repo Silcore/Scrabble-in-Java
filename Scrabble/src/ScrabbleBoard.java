@@ -368,6 +368,8 @@ public class ScrabbleBoard extends JPanel {
 										board[index1][index2].setText(hPanel.getCurrentPiece().getText());
 										board[index1][index2].setFont(new Font("Serif", Font.BOLD, 34));
 										hPanel.getCurrentPiece().setVisible(false);
+										scrabble.removePlayerLetter(hPanel.getCurrentPiece().getText().charAt(0));
+										hPanel.getCurrentPiece().removeAll();
 										hPanel.resetCurrentPiece();
 										scrabble.addLetter(board[index1][index2].getText().charAt(0), index1, index2);
 									}

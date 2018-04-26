@@ -192,11 +192,12 @@ public class Scrabble {
 	public void removePlayerLetter(char c) {
 		ArrayList<Character> list = playerList.get(turnList.get(turnIndex)).playerLetters;
 		
-		for(int i = 0; i < list.size(); i++)
+		for(int i = 0; i < list.size(); i++) {
 			if(Character.toLowerCase(list.get(i)) == (Character.toLowerCase(c))) {
 				playerList.get(turnList.get(turnIndex)).playerLetters.remove(i);
 				break;
 			}
+		}
 	}
 	
 	// add the designated letter to the board
