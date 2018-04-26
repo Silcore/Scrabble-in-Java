@@ -148,7 +148,19 @@ public class ScrabbleBoard extends JPanel {
 					//update players scores label
 					//update player turn label
 
-
+					if(scrabble.endTurn()) {
+						scrabble.refillCurrentPlayer();
+						scrabble.nextPlayer();
+						gPanel.reset();
+						hPanel.setHand();
+						bPanel.showCurrentPlayer();
+						iPanel.updateScores();
+					}
+					else {
+						scrabble.resetState();
+						gPanel.reset();
+						hPanel.setHand();
+					}
 				}
 			});
 			
@@ -161,9 +173,9 @@ public class ScrabbleBoard extends JPanel {
 			
 			// Adding Buttons to Button Section
 			buttonSection.add(resetTurn);
-			buttonSection.add(Box.createHorizontalStrut(20));
+			buttonSection.add(Box.createHorizontalStrut(5));
 			buttonSection.add(endTurn);
-			buttonSection.add(Box.createHorizontalStrut(20));
+			buttonSection.add(Box.createHorizontalStrut(40));
 			buttonSection.add(endGame);
 
 

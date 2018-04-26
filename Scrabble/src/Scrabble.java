@@ -241,13 +241,23 @@ public class Scrabble {
 			scoreTotal += calculateScore(boardState[i][j], i, j);
 		}
 		
-		if(verifyWord(builder.toString())) {
+		if(verifyWord(builder.reverse().toString())) {
 			completeTurn = true;
-			addScore(scoreTotal);
-		}
-		else if(verifyWord(builder.reverse().toString())) {
-			completeTurn = true;
-			addScore(scoreTotal);
+			if(doubleWord && tripleWord) {
+				addScore(scoreTotal * 3 * 2);
+				doubleWord = false;
+				tripleWord = false;
+			}
+			else if(doubleWord) {
+				addScore(scoreTotal * 2);
+				doubleWord = false;
+			}
+			else if(tripleWord) {
+				addScore(scoreTotal * 3);
+				tripleWord = false;
+			}
+			else
+				addScore(scoreTotal);
 		}
 		
 		// clear builder
@@ -267,15 +277,32 @@ public class Scrabble {
 			scoreTotal += calculateScore(boardState[i][j], i, j);
 		}
 		
-		if(verifyWord(builder.toString())) {
+		if(verifyWord(builder.reverse().toString())) {
 			completeTurn = true;
-			addScore(scoreTotal);
-		}
-		else if(verifyWord(builder.reverse().toString())) {
-			completeTurn = true;
-			addScore(scoreTotal);
+			if(doubleWord && tripleWord) {
+				addScore(scoreTotal * 3 * 2);
+				doubleWord = false;
+				tripleWord = false;
+			}
+			else if(doubleWord) {
+				addScore(scoreTotal * 2);
+				doubleWord = false;
+			}
+			else if(tripleWord) {
+				addScore(scoreTotal * 3);
+				tripleWord = false;
+			}
+			else
+				addScore(scoreTotal);
 		}
 		
+		// Reset lingering variables
+		doubleWord = false;
+		tripleWord = false;
+		firstMove = false;
+		currentI = -1;
+		currentJ = -1;
+			
 		return completeTurn;
 	}
 
@@ -403,7 +430,7 @@ public class Scrabble {
 		// stops when 7 tiles is reached or no more tiles available
 		public void fillHand() {
 			Random r = new Random();
-			/*
+			
 			for(int i = 0; i < 7; i++){
 				if(!letters.isEmpty() && playerLetters.size() < 7){
 					int e = r.nextInt(letters.size());
@@ -411,8 +438,9 @@ public class Scrabble {
 					letters.remove(e);
 				}
 			}
-			*/
 			
+			
+			/*
 			for(int i = 0; i < 7; i++){
 				if(!letters.isEmpty() && playerLetters.size() < 7){
 					int e = r.nextInt(letters.size());
@@ -420,6 +448,7 @@ public class Scrabble {
 					letters.remove(e);
 				}
 			}
+			*/
 		}
 	}
 }
