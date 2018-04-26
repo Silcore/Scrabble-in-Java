@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
-import java.util.regex.Pattern;
 
 //	Scrabble class (implemented as a Singleton) which contains all information pertaining to the game.
 //	Player information is stored in a private player class within Scrabble, handled by Scrabble methods.
@@ -187,6 +186,17 @@ public class Scrabble {
 	// add a player with the given name
 	public void addPlayer(String name) {
 		playerList.add(new Player(name));
+	}
+	
+	// remove the designated letter from the player's hand
+	public void removePlayerLetter(char c) {
+		ArrayList<Character> list = playerList.get(turnList.get(turnIndex)).playerLetters;
+		
+		for(int i = 0; i < list.size(); i++)
+			if(Character.toLowerCase(list.get(i)) == (Character.toLowerCase(c))) {
+				playerList.get(turnList.get(turnIndex)).playerLetters.remove(i);
+				break;
+			}
 	}
 	
 	// add the designated letter to the board
