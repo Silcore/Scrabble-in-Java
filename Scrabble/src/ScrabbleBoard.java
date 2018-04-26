@@ -138,6 +138,25 @@ public class ScrabbleBoard extends JPanel {
 					hPanel.setHand();
 				}
 			});
+			
+			// Initializing skipTurn Button
+			JButton skipTurn = new JButton("Skip Turn");
+			skipTurn.setFocusPainted(false);
+			skipTurn.setContentAreaFilled(false);
+			skipTurn.setOpaque(true);
+			skipTurn.setBackground(Color.PINK);
+			skipTurn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					scrabble.resetState();
+					scrabble.resetCurrentPlayer();
+					scrabble.nextPlayer();
+					gPanel.reset();
+					hPanel.setHand();
+					bPanel.showCurrentPlayer();
+					iPanel.updateScores();
+				}
+			});
 
 			// Initializing endTurn Button
 			JButton endTurn = new JButton("End Turn");
@@ -232,6 +251,8 @@ public class ScrabbleBoard extends JPanel {
 			buttonSection.add(Box.createHorizontalStrut(5));
 			buttonSection.add(endTurn);
 			buttonSection.add(Box.createHorizontalStrut(40));
+			buttonSection.add(skipTurn);
+			buttonSection.add(Box.createHorizontalStrut(5));
 			buttonSection.add(endGame);
 
 
